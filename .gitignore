@@ -1,3 +1,4 @@
 .DS_Store
 01-attention-is-all-you-need/Layers/__pycache__
 __pycache__
+*.json
