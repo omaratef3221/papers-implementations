@@ -3,12 +3,12 @@ from Tokenization.tokenize_data import tokenize_data
 
 class CustomDataset(Dataset):
     def __init__(self, dataset):
-        self.X, self.Y = dataset.map(tokenize_data, batched= True)
+        self.data = dataset.map(tokenize_data, batched= True)
 
     def __len__(self):
-        return len(self.X)
+        return len(self.data)
     
     def __getitem__(self, idx):
-        return self.X[idx], self.Y[idx]
+        return self.data[idx]
 
 
