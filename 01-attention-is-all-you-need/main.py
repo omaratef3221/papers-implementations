@@ -63,6 +63,3 @@ scheduler = lr_scheduler.LambdaLR(
     optimizer=optimizer,
     lr_lambda=lr_lambda
     )
-
-src, tgt = next(iter(train_dataloader))
-print(src, tgt)
