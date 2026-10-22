@@ -5,6 +5,8 @@ import torch.nn as nn
 from torch.optim import Adam, lr_scheduler
 from torch.utils.data import DataLoader
 import numpy as np
+import torch
+from torch.nn.utils.rnn import pad_sequence
 
 ### Variables
 VOCAB_SIZE= 37000
@@ -26,6 +28,15 @@ def lr_lambda(step, d_model = D_MODEL, warmup_steps = WARMUP_STEPS):
     step = max(step, 1)
     return d_model**-0.5 * np.min((step**-0.5, step*(warmup_steps**-1.5)))
 
+def collate_fn(batch, pad_idx = 1):
+    src, tgt = zip(*batch)
+    src = [torch.tensor(s) for s in src]
+    tgt = [torch.tensor(t) for t in tgt]
+
+    src = pad_sequence(src, batch_first=True, padding_value=pad_idx)
+    tgt = pad_sequence(tgt, batch_first=True, padding_value=pad_idx)
+
+    return src, tgt
 
 ### Get, process dataset
 dataset = get_dataset('de-en', split=True)
@@ -35,9 +46,9 @@ validation_data = CustomDataset(dataset['validation'])
 test_data = CustomDataset(dataset['test'])
 
 
-train_dataloader = DataLoader(training_data, batch_size=BATCH_SIZE, shuffle= True)
-validation_dataloader = DataLoader(validation_data, batch_size=BATCH_SIZE)
-testing_dataloader = DataLoader(test_data, batch_size=BATCH_SIZE)
+train_dataloader = DataLoader(training_data, batch_size=BATCH_SIZE, shuffle= True, collate_fn=collate_fn)
+validation_dataloader = DataLoader(validation_data, batch_size=BATCH_SIZE, collate_fn=collate_fn)
+testing_dataloader = DataLoader(test_data, batch_size=BATCH_SIZE, collate_fn=collate_fn)
 
 ### Build Transformer, Optimizer and Loss
 custom_transformer = Transformer(D_MODEL,
@@ -53,7 +64,7 @@ print(f"Trainable parameters: {model_total_params / 1e6:.2f}M  ({model_total_par
 
 custom_transformer.to(DEVICE)
 
-criterion = nn.CrossEntropyLoss(label_smoothing=0.1, ignore_index=1)
+loss = nn.CrossEntropyLoss(label_smoothing=0.1, ignore_index=1)
 
 optimizer = Adam(custom_transformer.parameters(), 
                  eps = EPS,
@@ -67,3 +78,5 @@ scheduler = lr_scheduler.LambdaLR(
     )
 
 ## Train Loop
+
+trainer(10, custom_transformer, optimizer, scheduler, train_dataloader, validation_dataloader, loss, DEVICE, 1)
