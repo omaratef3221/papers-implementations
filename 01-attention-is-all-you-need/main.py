@@ -3,6 +3,7 @@ from Transformer import Transformer
 from custom_trainer import trainer
 import torch.nn as nn
 from torch.optim import Adam, lr_scheduler
+from torch.utils.data import DataLoader
 import numpy as np
 
 ### Variables
@@ -13,7 +14,7 @@ MAX_LEN = 100
 N_Enc = 6
 N_Dec = 6
 BATCH_SIZE = 64 # ----- The paper is too much for my macbook (32GB unified memory)
-EPOCHS = 20 # ---- Smaller than the paper as it is also too much
+EPOCHS = 20 # ---- ~ to the paper as it is also too much
 EPS = 1e-9
 WARMUP_STEPS = 4000
 
@@ -31,6 +32,11 @@ dataset = get_dataset('de-en', split=True)
 training_data = CustomDataset(dataset['train'])
 validation_data = CustomDataset(dataset['validation'])
 test_data = CustomDataset(dataset['test'])
+
+
+train_dataloader = DataLoader(training_data, batch_size=BATCH_SIZE, shuffle= True)
+validation_dataloader = DataLoader(validation_data, batch_size=BATCH_SIZE, shuffle= True)
+testing_dataloader = DataLoader(testing_data, batch_size=BATCH_SIZE, shuffle= True)
 
 ### Build Transformer, Optimizer and Loss
 custom_transformer = Transformer(D_MODEL,
