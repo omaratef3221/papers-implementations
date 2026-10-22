@@ -21,4 +21,5 @@ class CustomDataset(Dataset):
         return len(self.data)
     
     def __getitem__(self, idx):
-        return self.data[idx]
+        row = self.data
+        return row['inputs'], row['labels']

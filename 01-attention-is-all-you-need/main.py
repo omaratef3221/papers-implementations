@@ -35,8 +35,8 @@ test_data = CustomDataset(dataset['test'])
 
 
 train_dataloader = DataLoader(training_data, batch_size=BATCH_SIZE, shuffle= True)
-validation_dataloader = DataLoader(validation_data, batch_size=BATCH_SIZE, shuffle= True)
-testing_dataloader = DataLoader(testing_data, batch_size=BATCH_SIZE, shuffle= True)
+validation_dataloader = DataLoader(validation_data, batch_size=BATCH_SIZE)
+testing_dataloader = DataLoader(test_data, batch_size=BATCH_SIZE)
 
 ### Build Transformer, Optimizer and Loss
 custom_transformer = Transformer(D_MODEL,
@@ -46,11 +46,12 @@ custom_transformer = Transformer(D_MODEL,
                                  N_Enc,
                                  N_Dec)
 
+model_total_params = sum(p.numel() for p in custom_transformer.parameters() if p.requires_grad)
+print("Total Trainable Parameters: ", model_total_params, " Parameters...")
 
 custom_transformer.to(DEVICE)
 
 criterion = nn.CrossEntropyLoss(label_smoothing=0.1, ignore_index=1)
-
 
 optimizer = Adam(custom_transformer.parameters(), 
                  eps = EPS,
@@ -63,3 +64,5 @@ scheduler = lr_scheduler.LambdaLR(
     lr_lambda=lr_lambda
     )
 
+src, tgt = next(iter(train_dataloader))
+print(src, tgt)

@@ -10,14 +10,12 @@ def tokenize_data(data):
     model_inputs['inputs'] = tokenizer(inputs,
                     max_length = 100,
                     truncation = True,
-                    padding = "max_length",
                     return_tensors = 'pt'
                     )["input_ids"]
 
     model_inputs['labels'] = tokenizer(targets_de,
                 max_length = 100,
                 truncation = True,
-                padding = "max_length",
                 return_tensors = 'pt'
                 )["input_ids"]
     return model_inputs
