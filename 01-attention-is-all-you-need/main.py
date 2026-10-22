@@ -65,3 +65,5 @@ scheduler = lr_scheduler.LambdaLR(
     optimizer=optimizer,
     lr_lambda=lr_lambda
     )
+
+## Train Loop
