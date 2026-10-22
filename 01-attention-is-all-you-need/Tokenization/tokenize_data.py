@@ -2,8 +2,8 @@ from transformers import AutoTokenizer
 tokenizer = AutoTokenizer.from_pretrained('en-de-tokenizer')
 
 def tokenize_data(data):
-    inputs = [ex["en"] for ex in data["translation"]]
-    targets_de = [ex["de"] for ex in data["translation"]]
+    inputs = [ex["en"].lower() for ex in data["translation"]]
+    targets_de = [ex["de"].lower() for ex in data["translation"]]
 
     model_inputs = {}
 

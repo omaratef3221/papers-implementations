@@ -7,6 +7,7 @@ from tokenizers.pre_tokenizers import ByteLevel
 from tokenizers.decoders import ByteLevel as ByteLevelDecoder
 from transformers import PreTrainedTokenizerFast
 
+
 def create_tokenizer(text_data: list, vocab_size: int, output_path: str, transformers = True):
     os.makedirs(output_path, exist_ok=True)
     tokenizer = Tokenizer(BPE(unk_token="<unk>"))
