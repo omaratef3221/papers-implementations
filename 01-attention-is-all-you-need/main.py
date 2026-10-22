@@ -3,6 +3,7 @@ from Transformer import Transformer
 from custom_trainer import trainer
 import torch.nn as nn
 from torch.optim import Adam, lr_scheduler
+import numpy as np
 
 ### Variables
 VOCAB_SIZE= 37000
@@ -11,12 +12,18 @@ H = 8
 MAX_LEN = 100
 N_Enc = 6
 N_Dec = 6
-BATCH_SIZE = 64 # -----  The paper is too much for my macbook (32GB unified memory)
-EPOCHS = 25 # Smaller than the paper as it is also too much
+BATCH_SIZE = 64 # ----- The paper is too much for my macbook (32GB unified memory)
+EPOCHS = 20 # ---- Smaller than the paper as it is also too much
 EPS = 1e-9
 WARMUP_STEPS = 4000
 
 DEVICE = 'mps'
+
+
+def lr_lambda(step, d_model = D_MODEL, warmup_steps = WARMUP_STEPS):
+    step = max(step, 1)
+    return d_model**-0.5 * np.min((step**-0.5, step*(warmup_steps**-1.5)))
+
 
 ### Get, process dataset
 dataset = get_dataset('de-en', split=True)
@@ -33,21 +40,20 @@ custom_transformer = Transformer(D_MODEL,
                                  N_Enc,
                                  N_Dec)
 
-for param in custom_transformer.parameters():
-    param.requires_grad = True
 
 custom_transformer.to(DEVICE)
 
-criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
+criterion = nn.CrossEntropyLoss(label_smoothing=0.1, ignore_index=1)
+
 
 optimizer = Adam(custom_transformer.parameters(), 
                  eps = EPS,
                  betas=(0.9, 0.98),
+                 lr = 1
                  )
 
-lr = lr_scheduler.LambdaLR(
+scheduler = lr_scheduler.LambdaLR(
     optimizer=optimizer,
-    
-                           )
-
+    lr_lambda=lr_lambda
+    )
 
