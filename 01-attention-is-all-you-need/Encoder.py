@@ -6,17 +6,19 @@ from Layers.LayerNorm import LayerNorm
 from Layers.FeedForward import FeedForward
 
 class EncoderBlock(nn.Module):
-    def __init__(self, D_MODEL, H):
+    def __init__(self, D_MODEL, H, dropout):
         super(EncoderBlock, self).__init__()
         self.multiheadattention = MultiHeadAttention(D_MODEL, H)
         self.layernorm1 = LayerNorm(D_MODEL)
         self.layernorm2 = LayerNorm(D_MODEL)
         self.feedforward = FeedForward(D_MODEL)
 
+        self.dropout = nn.Dropout(dropout)
+
     def forward(self, x, src_mask):
         attention_outputs = self.multiheadattention(x, x, x, mask = src_mask)
-        layer_norm1 = self.layernorm1(attention_outputs + x)
+        layer_norm1 = self.layernorm1(self.dropout(attention_outputs) + x)
 
         ffn_output = self.feedforward(layer_norm1)
-        final_x = self.layernorm2(ffn_output + layer_norm1)
+        final_x = self.layernorm2(self.dropout(ffn_output) + layer_norm1)
         return final_x

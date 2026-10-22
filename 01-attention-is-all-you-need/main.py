@@ -17,6 +17,7 @@ BATCH_SIZE = 64 # ----- The paper is too much for my macbook (32GB unified memor
 EPOCHS = 20 # ---- ~ to the paper as it is also too much
 EPS = 1e-9
 WARMUP_STEPS = 4000
+DROPOUT = 0.1
 
 DEVICE = 'mps'
 
@@ -44,10 +45,11 @@ custom_transformer = Transformer(D_MODEL,
                                  VOCAB_SIZE,
                                  MAX_LEN,
                                  N_Enc,
-                                 N_Dec)
+                                 N_Dec, 
+                                 DROPOUT)
 
 model_total_params = sum(p.numel() for p in custom_transformer.parameters() if p.requires_grad)
-print("Total Trainable Parameters: ", model_total_params, " Parameters...")
+print(f"Trainable parameters: {model_total_params / 1e6:.2f}M  ({model_total_params:,})")
 
 custom_transformer.to(DEVICE)
 
