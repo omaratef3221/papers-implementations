@@ -9,8 +9,8 @@ class EncoderBlock(nn.Module):
     def __init__(self, D_MODEL, H):
         super(EncoderBlock, self).__init__()
         self.multiheadattention = MultiHeadAttention(D_MODEL, H)
-        self.layernorm1 = LayerNorm()
-        self.layernorm2 = LayerNorm()
+        self.layernorm1 = LayerNorm(D_MODEL)
+        self.layernorm2 = LayerNorm(D_MODEL)
         self.feedforward = FeedForward(D_MODEL)
 
     def forward(self, x, src_mask):

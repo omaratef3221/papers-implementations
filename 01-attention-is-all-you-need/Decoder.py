@@ -9,11 +9,11 @@ class DecoderBlock(nn.Module):
     def __init__(self, D_MODEL, H):
         super(DecoderBlock, self).__init__()
         self.masked_multiheadattention = MultiHeadAttention(D_MODEL, H)
-        self.layernorm1 = LayerNorm()
+        self.layernorm1 = LayerNorm(D_MODEL)
         self.cross_multiheadattention = MultiHeadAttention(D_MODEL, H)
-        self.layernorm2 = LayerNorm()
+        self.layernorm2 = LayerNorm(D_MODEL)
         self.feedforward = FeedForward(D_MODEL)
-        self.layernorm3 = LayerNorm()
+        self.layernorm3 = LayerNorm(D_MODEL)
 
     def forward(self, x, encoder_output, src_mask, tgt_mask):
         masked_attn_output = self.masked_multiheadattention(x, 
