@@ -23,7 +23,7 @@ N_Dec = 6
 BATCH_SIZE = 64 # ----- The paper is too much for my macbook (32GB unified memory)
 EPOCHS = 20 # ---- ~ to the paper as it is also too much
 EPS = 1e-9
-WARMUP_STEPS = 4000
+WARMUP_STEPS = 50
 DROPOUT = 0.1
 
 DEVICE = 'mps'
@@ -104,4 +104,7 @@ scheduler = lr_scheduler.LambdaLR(
 
 ## Train Loop
 
-trainer(10, custom_transformer, optimizer, scheduler, train_dataloader, validation_dataloader, loss, DEVICE, 1, MAX_LEN)
+# trainer(10, custom_transformer, optimizer, scheduler, train_dataloader, validation_dataloader, loss, DEVICE, 1, MAX_LEN)
+from torch.utils.data import Subset
+tiny = DataLoader(Subset(training_data, range(10)), batch_size=10, collate_fn=collate_fn)
+trainer(200, custom_transformer, optimizer, scheduler, tiny, tiny, loss, DEVICE, 1, MAX_LEN)
