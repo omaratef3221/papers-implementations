@@ -17,7 +17,7 @@ def get_dataset(variation = 'de-en', split = True):
 
 class CustomDataset(Dataset):
     def __init__(self, dataset):
-        self.data = dataset.map(tokenize_data, batched= True)
+        self.data = dataset.map(tokenize_data, batched= True, load_from_cache_file=False)
 
     def __len__(self):
         return len(self.data)

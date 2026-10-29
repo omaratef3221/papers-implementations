@@ -59,6 +59,10 @@ custom_transformer = Transformer(D_MODEL,
                                  N_Dec, 
                                  DROPOUT)
 
+for p in custom_transformer.parameters():
+    if p.ndim > 1:         
+        nn.init.xavier_uniform_(p) 
+
 model_total_params = sum(p.numel() for p in custom_transformer.parameters() if p.requires_grad)
 print(f"Trainable parameters: {model_total_params / 1e6:.2f}M  ({model_total_params:,})")
 

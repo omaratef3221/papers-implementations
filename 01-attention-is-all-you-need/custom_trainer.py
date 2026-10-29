@@ -30,15 +30,20 @@ def trainer(epochs, model, optimizer, scheduler, train_dataloader, validation_da
             causal_masking = torch.tril(torch.ones(decoder_input.shape[1], decoder_input.shape[1], device=device), diagonal=0).bool()
             tgt_mask = tgt_mask & causal_masking
 
-            
             logits = model(src, decoder_input, src_mask, tgt_mask)
 
             preds = torch.argmax(logits, -1)
 
-            print(preds.shape)
+            batch_loss = loss_fn(
+                torch.reshape(logits, (logits.shape[0] * logits.shape[1], logits.shape[-1])),
+                torch.reshape(labels, ((labels.shape[0] * labels.shape[1]),)),
+                )
 
-            # batch_loss = loss_fn(preds, labels)
-
+            batch_loss.backward()
+            optimizer.step()
+            optimizer.zero_grad()    
+            scheduler.step()
+            print(batch_loss.item())
             break
         break
 
