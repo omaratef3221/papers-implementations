@@ -1,6 +1,7 @@
 from tqdm import tqdm
+import torch
 
-def trainer(epochs, model, optimizer, scheduler, train_dataloader, validation_dataloader, loss_fn, device, pad_idx):
+def trainer(epochs, model, optimizer, scheduler, train_dataloader, validation_dataloader, loss_fn, device, pad_idx, MAX_LEN):
     model.train()
 
     total_loss_train_plot = []
@@ -16,12 +17,27 @@ def trainer(epochs, model, optimizer, scheduler, train_dataloader, validation_da
 
             src = src.to(device)
             tgt = tgt.to(device)
-
+            
             decoder_input = tgt[:, :-1]
             labels = tgt[:, 1:]
-
+            
             src_mask = src != pad_idx
+            src_mask = src_mask.unsqueeze(1).unsqueeze(1)
 
+            tgt_mask = decoder_input != pad_idx
+            tgt_mask = tgt_mask.unsqueeze(1).unsqueeze(1)
+
+            causal_masking = torch.tril(torch.ones(decoder_input.shape[1], decoder_input.shape[1], device=device), diagonal=0).bool()
+            tgt_mask = tgt_mask & causal_masking
+
+            
+            logits = model(src, decoder_input, src_mask, tgt_mask)
+
+            preds = torch.argmax(logits, -1)
+
+            print(preds.shape)
+
+            # batch_loss = loss_fn(preds, labels)
 
             break
         break

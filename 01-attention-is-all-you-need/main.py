@@ -79,4 +79,4 @@ scheduler = lr_scheduler.LambdaLR(
 
 ## Train Loop
 
-trainer(10, custom_transformer, optimizer, scheduler, train_dataloader, validation_dataloader, loss, DEVICE, 1)
+trainer(10, custom_transformer, optimizer, scheduler, train_dataloader, validation_dataloader, loss, DEVICE, 1, MAX_LEN)
