@@ -2,3 +2,5 @@
 01-attention-is-all-you-need/Layers/__pycache__
 __pycache__
 *.json
+*.env
+01-attention-is-all-you-need/wandb

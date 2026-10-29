@@ -7,6 +7,11 @@ from torch.utils.data import DataLoader
 import numpy as np
 import torch
 from torch.nn.utils.rnn import pad_sequence
+import wandb
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 ### Variables
 VOCAB_SIZE= 37000
@@ -22,6 +27,22 @@ WARMUP_STEPS = 4000
 DROPOUT = 0.1
 
 DEVICE = 'mps'
+
+wandb.init(
+    project="paper 1 - Attention is all you need implementation",
+    config={
+        "VOCAB_SIZE": VOCAB_SIZE,
+        "D_MODEL": D_MODEL,
+        "H": H,
+        "N_Enc": N_Enc,
+        "N_Dec": N_Dec,
+        "BATCH_SIZE": BATCH_SIZE,
+        "EPOCHS": EPOCHS,
+        "EPS": EPS,
+        "WARMUP_STEPS": WARMUP_STEPS,
+        "DROPOUT":DROPOUT
+    }
+)
 
 
 def lr_lambda(step, d_model = D_MODEL, warmup_steps = WARMUP_STEPS):

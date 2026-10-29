@@ -1,5 +1,6 @@
 from tqdm import tqdm
 import torch
+import wandb
 
 def trainer(epochs, model, optimizer, scheduler, train_dataloader, validation_dataloader, loss_fn, device, pad_idx, MAX_LEN):
     model.train()
@@ -43,8 +44,9 @@ def trainer(epochs, model, optimizer, scheduler, train_dataloader, validation_da
             optimizer.step()
             optimizer.zero_grad()    
             scheduler.step()
-            print(batch_loss.item())
-            break
+
+            wandb.log({"train/loss": batch_loss.item()}) 
+            
         break
 
     print(f"Epoch {epoch}")
