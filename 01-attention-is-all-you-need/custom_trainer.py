@@ -5,7 +5,7 @@ import os
 
 def trainer(epochs, model, optimizer, scheduler, train_dataloader, validation_dataloader, loss_fn, device, pad_idx, MAX_LEN, MODEL_PATH = 'model_artifacts'):
     os.makedirs(MODEL_PATH, exist_ok=True)
-    for epoch in tqdm(range(epochs)):
+    for epoch in range(epochs):
         total_train_loss, total_val_loss, total_train_acc, total_val_acc, total_train_tokens, total_val_tokens = 0, 0, 0, 0, 0, 0
 
         model.train()
@@ -90,12 +90,12 @@ def trainer(epochs, model, optimizer, scheduler, train_dataloader, validation_da
 
         wandb.log({
             "train/loss": avg_train_loss,
-            "train/accuracy": avg_train_acc,
+            "train/accuracy": avg_train_acc * 100,
             "validation/loss": avg_val_loss,
-            "validation/accuracy": avg_val_acc,
+            "validation/accuracy": avg_val_acc * 100,
         })
 
-        print(f"Epoch {epoch} with Training Accuracy of {avg_train_acc} and Training Loss of: {avg_train_loss} Validation Accuracy {avg_val_acc} Validation Loss {avg_val_loss}")
+        print(f"Epoch {epoch} with Training Accuracy of {avg_train_acc * 100} and Training Loss of: {avg_train_loss} Validation Accuracy {avg_val_acc * 100} Validation Loss {avg_val_loss}")
 
         torch.save(model.state_dict(), f'{MODEL_PATH}/transformer_model.pth')
     return 0

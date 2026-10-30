@@ -30,6 +30,7 @@ DEVICE = 'mps'
 
 wandb.init(
     project="paper 1 - Attention is all you need implementation",
+    name = " 1% of the data - Small run test",
     config={
         "VOCAB_SIZE": VOCAB_SIZE,
         "D_MODEL": D_MODEL,
