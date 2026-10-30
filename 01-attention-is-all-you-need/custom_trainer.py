@@ -1,13 +1,15 @@
 from tqdm import tqdm
 import torch
 import wandb
+import os
 
-def trainer(epochs, model, optimizer, scheduler, train_dataloader, validation_dataloader, loss_fn, device, pad_idx, MAX_LEN):
-    for epoch in range(epochs):
+def trainer(epochs, model, optimizer, scheduler, train_dataloader, validation_dataloader, loss_fn, device, pad_idx, MAX_LEN, MODEL_PATH = 'model_artifacts'):
+    os.makedirs(MODEL_PATH, exist_ok=True)
+    for epoch in tqdm(range(epochs)):
         total_train_loss, total_val_loss, total_train_acc, total_val_acc, total_train_tokens, total_val_tokens = 0, 0, 0, 0, 0, 0
 
         model.train()
-        for data in tqdm(train_dataloader):
+        for data in train_dataloader:
             src, tgt = data
 
             src = src.to(device)
@@ -46,7 +48,7 @@ def trainer(epochs, model, optimizer, scheduler, train_dataloader, validation_da
             wandb.log({"step/loss": batch_loss.item(), "step/lr": scheduler.get_last_lr()[0]})
 
         model.eval()
-        for data in tqdm(validation_dataloader):
+        for data in validation_dataloader:
             
             with torch.no_grad():
                 src, tgt = data
@@ -95,5 +97,6 @@ def trainer(epochs, model, optimizer, scheduler, train_dataloader, validation_da
 
         print(f"Epoch {epoch} with Training Accuracy of {avg_train_acc} and Training Loss of: {avg_train_loss} Validation Accuracy {avg_val_acc} Validation Loss {avg_val_loss}")
 
+        torch.save(model.state_dict(), f'{MODEL_PATH}/transformer_model.pth')
     return 0
 

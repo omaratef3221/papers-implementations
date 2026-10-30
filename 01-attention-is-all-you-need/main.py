@@ -23,7 +23,7 @@ N_Dec = 6
 BATCH_SIZE = 64 # ----- The paper is too much for my macbook (32GB unified memory)
 EPOCHS = 20 # ---- ~ to the paper as it is also too much
 EPS = 1e-9
-WARMUP_STEPS = 50
+WARMUP_STEPS = 4000
 DROPOUT = 0.1
 
 DEVICE = 'mps'
@@ -80,9 +80,6 @@ custom_transformer = Transformer(D_MODEL,
                                  N_Dec, 
                                  DROPOUT)
 
-for p in custom_transformer.parameters():
-    if p.ndim > 1:         
-        nn.init.xavier_uniform_(p) 
 
 model_total_params = sum(p.numel() for p in custom_transformer.parameters() if p.requires_grad)
 print(f"Trainable parameters: {model_total_params / 1e6:.2f}M  ({model_total_params:,})")
@@ -102,9 +99,7 @@ scheduler = lr_scheduler.LambdaLR(
     lr_lambda=lr_lambda
     )
 
+
 ## Train Loop
 
-# trainer(10, custom_transformer, optimizer, scheduler, train_dataloader, validation_dataloader, loss, DEVICE, 1, MAX_LEN)
-from torch.utils.data import Subset
-tiny = DataLoader(Subset(training_data, range(10)), batch_size=10, collate_fn=collate_fn)
-trainer(200, custom_transformer, optimizer, scheduler, tiny, tiny, loss, DEVICE, 1, MAX_LEN)
+trainer(10, custom_transformer, optimizer, scheduler, train_dataloader, validation_dataloader, loss, DEVICE, 1, MAX_LEN)
