@@ -5,7 +5,7 @@ import datasets
 
 def get_dataset(variation = 'de-en', split = True):
     if split:
-        split_amt = {"train": "train[:10%]","validation": "validation[:20%]","test": "test[:20%]"}
+        split_amt = {"train": "train[:1%]","validation": "validation[:1%]","test": "test[:1%]"}
     else:
         split_amt = None
     dataset = datasets.load_dataset('wmt/wmt14', variation,
