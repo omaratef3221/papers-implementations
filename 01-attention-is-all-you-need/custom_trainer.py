@@ -97,6 +97,12 @@ def trainer(epochs, model, optimizer, scheduler, train_dataloader, validation_da
 
         print(f"Epoch {epoch} with Training Accuracy of {avg_train_acc * 100} and Training Loss of: {avg_train_loss} Validation Accuracy {avg_val_acc * 100} Validation Loss {avg_val_loss}")
 
-        torch.save(model.state_dict(), f'{MODEL_PATH}/transformer_model.pth')
+        torch.save({
+                "model": model.state_dict(),
+                "optimizer": optimizer.state_dict(),
+                "scheduler": scheduler.state_dict(),
+                "epoch": epoch,
+            }, f"{MODEL_PATH}/last.pth")
+
     return 0
 
