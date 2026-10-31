@@ -3,7 +3,7 @@ import torch
 import wandb
 import os
 
-def trainer(epochs, model, optimizer, scheduler, train_dataloader, validation_dataloader, loss_fn, device, pad_idx, MAX_LEN, MODEL_PATH = 'model_artifacts'):
+def trainer(epochs, model, optimizer, scheduler, train_dataloader, validation_dataloader, loss_fn, device, pad_idx, MAX_LEN, MODEL_PATH = 'model_artifacts_25p'):
     os.makedirs(MODEL_PATH, exist_ok=True)
     for epoch in range(epochs):
         total_train_loss, total_val_loss, total_train_acc, total_val_acc, total_train_tokens, total_val_tokens = 0, 0, 0, 0, 0, 0
